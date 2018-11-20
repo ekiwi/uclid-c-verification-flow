@@ -11,5 +11,13 @@ KLEE = ../../klee/build/bin/klee
 %.smt: 1d_world.harness.ll
 	$(KLEE) -entry-point=$*_h $<
 	mkdir -p $@
+	mv klee-last/*.smt2 $@/
 
-all: init.smt
+all: init.smt left.smt right.smt
+
+remove_klee:
+	rm -rf klee-*
+
+clean: remove-klee
+	rm -rf *.smt
+
