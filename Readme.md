@@ -78,3 +78,25 @@ module main {
 
 Our first goal is to verify that our uclid implementations are
 equivalent to the corresponding C functions.
+
+## Compiling Klee
+
+In order to translate C programs into SMT formulas
+we use the klee symbolic execution engine with a
+small custom extension that allows us to dump
+the (symbolic) value and path condition of expressions
+using the `klee_dump_expr` function.
+
+Our fork of klee is included as a submodule and
+can be compiled like this:
+
+```.sh
+git submodule update --init
+cd klee
+mkdir build
+cd build
+cmake ..
+make -j4
+```
+
+This will result in a binary in `klee/build/bin/klee`
