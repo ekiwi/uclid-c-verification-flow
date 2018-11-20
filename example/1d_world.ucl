@@ -1,0 +1,57 @@
+module main {
+	type call_t = enum { c_left, c_right };
+
+	input call_id : call_t;
+	var pos : bv32;
+
+	init {
+		pos = 0bv32;
+	}
+
+	procedure left()
+		returns (r : boolean)
+		modifies pos;
+	{
+		if ( pos <= -100bv32 ) { r = false; }
+		else { pos = pos - 1bv32; r = true; }
+	}
+
+	procedure right()
+		returns (r : boolean)
+		modifies pos;
+	{
+		if ( pos >= 100bv32 ) { r = false; }
+		else { pos = pos + 1bv32; r = true; }
+	}
+
+	procedure broken_right()
+		returns (r : boolean)
+		modifies pos;
+	{
+		pos = pos + 1bv32;
+		r = true;
+	}
+
+    next { var s : boolean; call (s) = left(); assert(pos == pos'); }
+
+	// next {
+	// 	var success : boolean;
+	// 	case
+	// 		(call_id == c_left)  : { call (success) = left(); }
+	// 		(call_id == c_right) : { call (success) = right(); }
+			// uncomment to see monotonic increasing assertion fail!
+			// (call_id == c_right) : { call (success) = broken_right(); }
+	// 	esac
+	// 	assert (success  ==> pos != pos');
+	// 	assert (!success ==> pos == pos');
+	// 	assert (success && (call_id == c_left)  ==> pos' < pos);
+	// 	assert (success && (call_id == c_right) ==> pos' > pos);
+	// }
+
+	control {
+		//f = unroll(5);
+		induction;
+		check;
+		print_results;
+	}
+}
