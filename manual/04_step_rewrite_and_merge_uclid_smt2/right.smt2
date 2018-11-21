@@ -7,4 +7,4 @@
              (bvadd #x00000001 initial_4_pos)))
 
 ; from step3: right_success.smt2
-(define-fun |uclid_success_n| () Bool (bvsle #x00000064 initial_4_pos))
+(define-fun |uclid_success_n| () Bool (not (bvsle #x00000064 initial_4_pos)))
