@@ -1,0 +1,53 @@
+module main {
+	type call_t = enum { c_left, c_right };
+
+	input call_id : call_t;
+	var pos : bv32;
+
+	init {
+		pos = 0bv32;
+	}
+
+	procedure left()
+		returns (r : boolean)
+		modifies pos;
+	{
+		if ( pos <= -100bv32 ) { r = false; }
+		else { pos = pos - 1bv32; r = true; }
+	}
+
+	procedure right()
+		returns (r : boolean)
+		modifies pos;
+	{
+		if ( pos >= 100bv32 ) { r = false; }
+		else { pos = pos + 1bv32; r = true; }
+	}
+
+	procedure broken_right()
+		returns (r : boolean)
+		modifies pos;
+	{
+		pos = pos + 1bv32;
+		r = true;
+	}
+
+	// extract pos (output in left_pos.smt2)
+    // next { var s : boolean; call (s) = left(); assert(pos == pos'); }
+
+	// extract success (output in left_success.smt2)
+    // next { var success : boolean; call (success) = left(); assert(success'); }
+
+	// extract pos (output in right_pos.smt2)
+    // next { var s : boolean; call (s) = right(); assert(pos == pos'); }
+
+	// extract success (output in right_success.smt2)
+    // next { var success : boolean; call (success) = right(); assert(success'); }
+
+	control {
+		//f = unroll(5);
+		induction;
+		check;
+		print_results;
+	}
+}
